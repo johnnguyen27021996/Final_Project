@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Product;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use function foo\func;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -31,6 +33,15 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        Route::bind('productSlug', function($productSlug) {
+            $product = Product::with('cate')->where('slug', $productSlug)->first();
+            return $product ? $product : abort(404);
+        });
+        Route::bind('productId', function($productId) {
+            $prodct = Product::with('cate')->where('id', $productId)->first();
+            return $prodct ? $prodct : abort(404);
+        });
+
 
         parent::boot();
     }
