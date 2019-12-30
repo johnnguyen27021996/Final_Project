@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Http\Requests\ReviewRequest;
 use App\Product;
 use Illuminate\Http\Request;
 use function foo\func;
@@ -62,5 +63,19 @@ class ProductController extends Controller
                 dd('Exception');
         }
         return view('Client.product', compact('cates', 'prods'));
+    }
+
+    public function favoriteProduct(Request $request, Product $product)
+    {
+        $request->user()->processFavirotes($product->id);
+
+        return redirect()->back();
+    }
+
+    public function reviewProduct(ReviewRequest $request, Product $product)
+    {
+        $product->reviews()->create($request->only('name', 'email', 'rate', 'body'));
+
+        return redirect()->back();
     }
 }

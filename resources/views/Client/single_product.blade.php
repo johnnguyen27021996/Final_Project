@@ -16,12 +16,13 @@
                         </div>
                     </div>
                     <div class="row mb-20">
-                        <div class="col-sm-12"><span><i class="fa fa-star star"></i></span><span><i
-                                    class="fa fa-star star"></i></span><span><i
-                                    class="fa fa-star star"></i></span><span><i
-                                    class="fa fa-star star"></i></span><span><i
-                                    class="fa fa-star star-off"></i></span><a class="open-tab section-scroll"
-                                                                              href="#reviews">-2customer reviews</a>
+                        <div class="col-sm-12">
+                            {{ $product->avg_star_review }}
+                            <span><i class="fa fa-star star"></i></span>
+                            <a class="open-tab section-scroll"
+                               href="#reviews"> - {{ $product->distinct_review_count }} customer reviews - </a>
+                            <a href="#"
+                               class="open-tab section-scroll">{{ $product->is_farivotes }} {{ \Illuminate\Support\Str::plural('farivote', $product->is_farivotes) }}</a>
                         </div>
                     </div>
                     <div class="row mb-20">
@@ -38,9 +39,11 @@
                     </div>
                     <div class="row mb-20">
                         <div class="col-sm-4 mb-sm-20">
-                            <a href="" class="btn btn-lg btn-block btn-round btn-danger">Favourite</a>
+                            <a href="{{ route('favorite.product', $product->id) }}"
+                               class="btn btn-lg btn-block btn-round btn-{{ $product->checkFarivote(auth()->id()) == true ? 'success' : 'danger' }}">Favorite</a>
                         </div>
-                        <div class="col-sm-8"><a class="btn btn-lg btn-block btn-round btn-b" href="{{ route('cart.add', $product->id) }}">Add To Cart</a>
+                        <div class="col-sm-8"><a class="btn btn-lg btn-block btn-round btn-b"
+                                                 href="{{ route('cart.add', $product->id) }}">Add To Cart</a>
                         </div>
                     </div>
                     <div class="row mb-20">
@@ -56,7 +59,8 @@
                     <ul class="nav nav-tabs font-alt" role="tablist">
                         <li class="active"><a href="#description" data-toggle="tab"><span class="icon-tools-2"></span>Description</a>
                         </li>
-                        <li><a href="#reviews" data-toggle="tab"><span class="icon-tools-2"></span>Reviews (2)</a></li>
+                        <li><a href="#reviews" data-toggle="tab"><span class="icon-tools-2"></span>Reviews
+                                ({{ $product->review_count }})</a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="description">
@@ -64,77 +68,67 @@
                         </div>
                         <div class="tab-pane" id="reviews">
                             <div class="comments reviews">
-                                <div class="comment clearfix">
-                                    <div class="comment-avatar"><img src="" alt="avatar"/></div>
-                                    <div class="comment-content clearfix">
-                                        <div class="comment-author font-alt"><a href="#">John Doe</a></div>
-                                        <div class="comment-body">
-                                            <p>The European languages are members of the same family. Their separate
-                                                existence is a myth. For science, music, sport, etc, Europe uses the
-                                                same vocabulary. The European languages are members of the same family.
-                                                Their separate existence is a myth.</p>
+                                @if(count($product->reviews) > 0)
+                                    @foreach($product->reviews as $review)
+                                        <div class="comment clearfix">
+                                            <div class="comment-avatar"><img src="" alt="avatar"/></div>
+                                            <div class="comment-content clearfix">
+                                                <div class="comment-author font-alt"><a href="#">{{ $review->name }}
+                                                        <span class="badge badge-secondary">{{ $review->public }}</span></a>
+                                                </div>
+                                                <div class="comment-body">
+                                                    <p>{!! $review->body !!}</p>
+                                                </div>
+                                                <div class="comment-meta font-alt">{{ $review->created_at }}
+                                                    @for($i=1; $i<=5; $i++)
+                                                        <span><i
+                                                                class="fa fa-star star {{ $review->rate < $i ? 'star-off' : ''  }}"></i></span>
+                                                    @endfor
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="comment-meta font-alt">Today, 14:55 -<span><i
-                                                    class="fa fa-star star"></i></span><span><i
-                                                    class="fa fa-star star"></i></span><span><i
-                                                    class="fa fa-star star"></i></span><span><i
-                                                    class="fa fa-star star"></i></span><span><i
-                                                    class="fa fa-star star-off"></i></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="comment clearfix">
-                                    <div class="comment-avatar"><img src="" alt="avatar"/></div>
-                                    <div class="comment-content clearfix">
-                                        <div class="comment-author font-alt"><a href="#">Mark Stone</a></div>
-                                        <div class="comment-body">
-                                            <p>Europe uses the same vocabulary. The European languages are members of
-                                                the same family. Their separate existence is a myth.</p>
-                                        </div>
-                                        <div class="comment-meta font-alt">Today, 14:59 -<span><i
-                                                    class="fa fa-star star"></i></span><span><i
-                                                    class="fa fa-star star"></i></span><span><i
-                                                    class="fa fa-star star"></i></span><span><i
-                                                    class="fa fa-star star-off"></i></span><span><i
-                                                    class="fa fa-star star-off"></i></span>
-                                        </div>
-                                    </div>
-                                </div>
+                                    @endforeach
+                                @endif
                             </div>
                             <div class="comment-form mt-30">
                                 <h4 class="comment-form-title font-alt">Add review</h4>
-                                <form method="post">
+                                <form method="post" action="{{ route('review.product', $product->id) }}">
+                                    @csrf
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label class="sr-only" for="name">Name</label>
-                                                <input class="form-control" id="name" type="text" name="name"
+                                                <input class="form-control" id="name" type="text" name="name" @auth value="{{ auth()->user()->name }}" @endauth
                                                        placeholder="Name"/>
+                                                <p class="help-block text-danger">{{ $errors->first('name') }}</p>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label class="sr-only" for="email">Name</label>
-                                                <input class="form-control" id="email" type="text" name="email"
+                                                <input class="form-control" id="email" type="text" name="email" @auth value="{{ auth()->user()->email }}" @endauth
                                                        placeholder="E-mail"/>
+                                                <p class="help-block text-danger">{{ $errors->first('email') }}</p>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <select class="form-control">
-                                                    <option selected="true" disabled="">Rating</option>
+                                                <select name="rate" class="form-control">
+                                                    <option value="" selected="true">Rating</option>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                     <option value="3">3</option>
                                                     <option value="4">4</option>
                                                     <option value="5">5</option>
                                                 </select>
+                                                <p class="help-block text-danger">{{ $errors->first('rate') }}</p>
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
                                             <div class="form-group">
-                                                <textarea class="form-control" id="" name="" rows="4"
+                                                <textarea class="form-control" id="" name="body" rows="4"
                                                           placeholder="Review"></textarea>
+                                                <p class="help-block text-danger">{{ $errors->first('body') }}</p>
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
@@ -162,12 +156,18 @@
                     @foreach($relatedProd as $related)
                         <div class="col-sm-6 col-md-3 col-lg-3">
                             <div class="shop-item">
-                                <div class="shop-item-image"><img src="{{ asset('uploads/product/'.$related->thumbnail) }}"
+                                <div class="shop-item-image"><img style="width: 275px; height: 185px"
+                                                                  class="img-thumbnail"
+                                                                  src="{{ asset('uploads/product/'.$related->thumbnail) }}"
                                                                   alt="{{ $related->name }}"/>
-                                    <div class="shop-item-detail"><a href="{{ route('cart.add', $related->id) }}" class="btn btn-round btn-b"><span class="icon-basket">Add To Cart</span></a>
+                                    <div class="shop-item-detail"><a href="{{ route('cart.add', $related->id) }}"
+                                                                     class="btn btn-round btn-b"><span
+                                                class="icon-basket">Add To Cart</span></a>
                                     </div>
                                 </div>
-                                <h4 class="shop-item-title font-alt"><a href="{{ route('single.product', $related->slug) }}">{{ $related->name }}</a></h4>${{ $related->price_format }}
+                                <h4 class="shop-item-title font-alt"><a
+                                        href="{{ route('single.product', $related->slug) }}">{{ $related->name }}</a>
+                                </h4>${{ $related->price_format }}
                             </div>
                         </div>
                     @endforeach

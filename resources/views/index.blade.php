@@ -15,7 +15,7 @@
                     @foreach($latestProd as $last)
                         <div class="col-sm-6 col-md-3 col-lg-3">
                             <div class="shop-item">
-                                <div class="shop-item-image"><img src="{{ asset('uploads/product/'.$last->thumbnail) }}"
+                                <div class="shop-item-image"><img style="width: 275px; height: 185px" class="img-thumbnail" src="{{ asset('uploads/product/'.$last->thumbnail) }}"
                                                                   alt="{{ $last->name }}"/>
                                     <div class="shop-item-detail"><a href="{{ route('cart.add', $last->id) }}" class="btn btn-round btn-b"><span
                                                 class="icon-basket">Add To Cart</span></a>

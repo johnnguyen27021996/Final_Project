@@ -34,8 +34,13 @@
                 </li>
                 <li class="dropdown"><a href="{{ route('checkout') }}">Checkout</a>
                 </li>
-                <li class="dropdown"><a href="{{ route('login.register') }}">Login / Register</a>
-                </li>
+                @if(auth()->check())
+                    <li class="dropdown"><a href="{{ route('login.logout') }}">Logout</a>
+                    </li>
+                @else
+                    <li class="dropdown"><a href="{{ route('login.register') }}">Login / Register</a>
+                    </li>
+                @endif
                 <!--li.dropdown.navbar-cart-->
                 <!--    a.dropdown-toggle(href='#', data-toggle='dropdown')-->
                 <!--        span.icon-basket-->

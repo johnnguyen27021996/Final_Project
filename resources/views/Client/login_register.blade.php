@@ -18,9 +18,10 @@
                 <div class="col-sm-5 col-sm-offset-1 mb-sm-40">
                     <h4 class="font-alt">Login</h4>
                     <hr class="divider-w mb-10">
-                    <form class="form" action="" method="post">
+                    <form class="form" action="{{ route('login.login') }}" method="post">
+                        @csrf
                         <div class="form-group">
-                            <input class="form-control" type="text" name="username"
+                            <input class="form-control" type="text" name="email"
                                    placeholder="Username"/>
                         </div>
                         <div class="form-group">
@@ -37,6 +38,7 @@
                     <h4 class="font-alt">Register</h4>
                     <hr class="divider-w mb-10">
                     <form class="form" action="" method="post">
+                        @csrf
                         <div class="form-group">
                             <input class="form-control" type="text" name="remail" placeholder="Email"/>
                         </div>
