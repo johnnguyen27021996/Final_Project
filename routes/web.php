@@ -27,6 +27,8 @@ Route::get('addtocart/{productId}', 'CartController@add')->name('cart.add');
 Route::get('removetocart/{cartKey}', 'CartController@remove')->name('cart.remove');
 Route::get('addtocart', 'CartController@show');
 Route::get('checkout', 'CheckoutController@index')->name('checkout');
+Route::get('payment', 'OrderController@payment')->name('payment');
+Route::post('payment', 'OrderController@processPayment')->name('payment.process');
 Route::get('login', 'LoginRegisterController@index')->name('login.register');
 Route::post('login', 'LoginRegisterController@login')->name('login.login');
 Route::get('logout', 'LoginRegisterController@logout')->name('login.logout');

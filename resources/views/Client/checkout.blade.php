@@ -23,10 +23,10 @@
                             <th>Total</th>
                             <th>Remove</th>
                         </tr>
+                        @php
+                            $total = 0;
+                        @endphp
                         @if(session()->has('cart'))
-                            @php
-                                $total = 0;
-                            @endphp
                             @foreach(session()->get('cart') as $key => $cart)
                                 @php
                                     $total = $total + (int) $cart['price']*$cart['qty'];
@@ -70,7 +70,8 @@
                 </div>
                 <div class="col-sm-3 col-sm-offset-3">
                     <div class="form-group">
-                        <button class="btn btn-block btn-round btn-d pull-right" type="submit">Update Cart</button>
+                        <button class="btn btn-block btn-round btn-d pull-right" type="submit" disabled>Update Cart
+                        </button>
                     </div>
                 </div>
             </div>
@@ -84,9 +85,7 @@
                             <tr>
                                 <th>Cart Subtotal :</th>
                                 <td>
-                                    @php
-                                        echo '$'.$total;
-                                    @endphp
+                                    $.{{ $total }}
                                 </td>
                             </tr>
                             <tr>
@@ -96,15 +95,14 @@
                             <tr class="shop-Cart-totalprice">
                                 <th>Total :</th>
                                 <td>
-                                    @php
-                                        echo '$'.$total;
-                                    @endphp
+                                    $.{{ $total }}
                                 </td>
                             </tr>
                             </tbody>
                         </table>
-                        <button class="btn btn-lg btn-block btn-round btn-d" type="submit">Proceed to Checkout
-                        </button>
+                        <a href="{{ route('payment') }}" class="btn btn-lg btn-block btn-round btn-d" type="submit">Proceed
+                            to Checkout
+                        </a>
                     </div>
                 </div>
             </div>

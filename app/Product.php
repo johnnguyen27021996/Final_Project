@@ -67,11 +67,16 @@ class Product extends Model
 
     public function favorites()
     {
-        return $this->belongsToMany(Product::class, 'favorites');
+        return $this->belongsToMany(Product::class, 'favorites')->withTimestamps();
     }
 
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_details')->withTimestamps();
     }
 }
